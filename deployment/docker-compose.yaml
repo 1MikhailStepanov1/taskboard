@@ -4,7 +4,7 @@ services:
     container_name: db
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_PASSWORD: passw0rd
       POSTGRES_DB: postgres
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:

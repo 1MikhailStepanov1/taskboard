@@ -5,6 +5,16 @@ tasks:
     cmds:
       - task --list
 
+  migrate_userdb:
+    desc: "Apply migrations on userDB"
+    cmds:
+      - goose -dir migrations/user postgres "postgresql://auth_service:passw0rd1@127.0.0.1:5435/userdb?sslmode=disable" up
+
+  migrate_coredb:
+    desc: "Apply migrations on coreDB"
+    cmds:
+      - goose -dir migrations/core postgres "postgresql://task_service:passw0rd2@127.0.0.1:5435/coredb?sslmode=disable" up
+
   generate:
     aliases:
       - gen
