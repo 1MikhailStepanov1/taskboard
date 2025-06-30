@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package service.auth;
+
+option go_package = "taskboard/auth-service/proto/gen";
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string name = 3;
+  string surname = 4;
+  string shortName = 5;
+}
+
+message RegisterResponse {
+  string user_id = 1;
+}
+
+message LoginRequest {
+  string email = 1;
+  string shortName = 2;
+  string password = 3;
+}
+
+message LoginResponse {
+  string token = 1;
+}
+
+service Auth {
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
+}

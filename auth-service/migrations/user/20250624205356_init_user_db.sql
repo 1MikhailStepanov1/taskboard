@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS users(
     email VARCHAR(255) NOT NULL UNIQUE,
     password TEXT NOT NULL,
     name VARCHAR(100) NOT NULL,
+    surname VARCHAR(100) NOT NULL,
+    short_name VARCHAR(100) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE
 );
 

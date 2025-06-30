@@ -27,5 +27,5 @@ func setupLogger(env string) *slog.Logger {
 }
 
 func main() {
-	
+
 }
