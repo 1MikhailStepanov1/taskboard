@@ -5,26 +5,34 @@ import (
 	"log/slog"
 )
 
-type UserService struct {
+type UserServiceImpl struct {
 	log *slog.Logger
 }
 
 func NewUserService(
 	log *slog.Logger,
-) *UserService {
-	return &UserService{
+) *UserServiceImpl {
+	return &UserServiceImpl{
 		log: log,
 	}
 }
 
-func (u *UserService) Register(
+func (u *UserServiceImpl) Register(
 	ctx context.Context,
+	email string,
+	password string,
+	name string,
+	surname string,
+	shortName string,
 ) (string, error) {
 	return "", nil
 }
 
-func (u *UserService) Login(
+func (u *UserServiceImpl) Login(
 	ctx context.Context,
+	email string,
+	shortName string,
+	password string,
 ) (string, error) {
 	return "", nil
 }

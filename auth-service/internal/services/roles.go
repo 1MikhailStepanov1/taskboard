@@ -17,6 +17,8 @@ func NewRoleService(
 
 func (r *RoleService) CheckPermission(
 	ctx context.Context,
+	userID string,
+	action string,
 ) (bool, error) {
 	return true, nil
 }
