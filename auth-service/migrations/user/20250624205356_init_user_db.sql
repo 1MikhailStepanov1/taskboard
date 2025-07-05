@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS users(
     id UUID PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password TEXT NOT NULL,
+    password_salt VARCHAR(10),
     name VARCHAR(100) NOT NULL,
     surname VARCHAR(100) NOT NULL,
     short_name VARCHAR(100) NOT NULL,

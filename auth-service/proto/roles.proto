@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package service.auth;
+
+option go_package = "taskboard/auth-service/proto/gen";
+
+message CheckPermissionRequest {
+  string shortName = 1;
+  string action = 2;
+}
+
+message CheckPermissionResponse {
+  bool ok = 1;
+}

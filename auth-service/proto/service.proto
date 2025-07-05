@@ -1,0 +1,14 @@
+syntax = "proto3";
+import "auth.proto";
+import "roles.proto";
+
+package service.auth;
+
+option go_package = "taskboard/auth-service/proto/gen";
+
+
+service AuthService {
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
+  rpc CheckPermission (CheckPermissionRequest) returns (CheckPermissionResponse);
+}
