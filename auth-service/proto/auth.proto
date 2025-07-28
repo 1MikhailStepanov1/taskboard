@@ -9,7 +9,6 @@ message RegisterRequest {
   string password = 2;
   string name = 3;
   string surname = 4;
-  string shortName = 5;
 }
 
 message RegisterResponse {

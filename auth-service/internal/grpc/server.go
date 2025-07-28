@@ -19,7 +19,6 @@ type UserService interface {
 		password string,
 		name string,
 		surname string,
-		shortName string,
 	) (userID string, err error)
 }
 
@@ -58,7 +57,7 @@ func (s *authServiceAPI) Register(
 	ctx context.Context,
 	req *authServicev1.RegisterRequest,
 ) (*authServicev1.RegisterResponse, error) {
-	userID, err := s.user.Register(ctx, req.Email, req.Password, req.Name, req.Surname, req.ShortName)
+	userID, err := s.user.Register(ctx, req.Email, req.Password, req.Name, req.Surname)
 	if err != nil {
 	}
 	return &authServicev1.RegisterResponse{UserId: userID}, nil

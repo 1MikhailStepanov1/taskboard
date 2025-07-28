@@ -14,8 +14,17 @@ type AppConfig struct {
 	LogLevel            string
 }
 
+type DBConfig struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	Database string
+}
+
 type Config struct {
 	App AppConfig
+	DB  DBConfig
 }
 
 func New() *Config {
@@ -25,6 +34,13 @@ func New() *Config {
 			HTTPPort:            getEnvAsInt("HTTP_APP_PORT", 6666),
 			HTTPShutdownTimeout: time.Duration(getEnvAsInt("HTTP_SHUTDOWN_TIMEOUT", 10)),
 			LogLevel:            getEnv("LOG_LEVEL", "PROD"),
+		},
+		DB: DBConfig{
+			Host:     getEnv("DB_HOST", "localhost"),
+			Port:     getEnvAsInt("DB_PORT", 5432),
+			User:     getEnv("DB_USER", "postgres"),
+			Password: getEnv("DB_PASSWORD", "postgres"),
+			Database: getEnv("DB_DATABASE", "postgres"),
 		},
 	}
 }

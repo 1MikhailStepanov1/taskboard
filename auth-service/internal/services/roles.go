@@ -5,17 +5,17 @@ import (
 	"log/slog"
 )
 
-type RoleService struct {
+type RoleServiceImpl struct {
 	log *slog.Logger
 }
 
 func NewRoleService(
 	log *slog.Logger,
-) *RoleService {
-	return &RoleService{log: log}
+) *RoleServiceImpl {
+	return &RoleServiceImpl{log: log}
 }
 
-func (r *RoleService) CheckPermission(
+func (r *RoleServiceImpl) CheckPermission(
 	ctx context.Context,
 	userID string,
 	action string,
