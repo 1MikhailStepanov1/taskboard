@@ -2,8 +2,12 @@ package grpc
 
 import (
 	"context"
+	"errors"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	authServicev1 "taskboard/auth-service/gen"
+	"taskboard/auth-service/internal/storage"
 )
 
 type UserService interface {
@@ -19,6 +23,7 @@ type UserService interface {
 		password string,
 		name string,
 		surname string,
+		shortName string,
 	) (userID string, err error)
 }
 
@@ -47,6 +52,12 @@ func (s *authServiceAPI) Login(
 	ctx context.Context,
 	req *authServicev1.LoginRequest,
 ) (*authServicev1.LoginResponse, error) {
+	if req.Email == "" && req.ShortName == "" {
+		return nil, status.Error(codes.InvalidArgument, "email or short name required")
+	}
+	if req.Password == "" {
+		return nil, status.Error(codes.InvalidArgument, "password required")
+	}
 	token, err := s.user.Login(ctx, req.Email, req.ShortName, req.Password)
 	if err != nil {
 	}
@@ -57,8 +68,27 @@ func (s *authServiceAPI) Register(
 	ctx context.Context,
 	req *authServicev1.RegisterRequest,
 ) (*authServicev1.RegisterResponse, error) {
-	userID, err := s.user.Register(ctx, req.Email, req.Password, req.Name, req.Surname)
+	if req.Email == "" {
+		return nil, status.Error(codes.InvalidArgument, "email is required")
+	}
+	if req.Password == "" {
+		return nil, status.Error(codes.InvalidArgument, "password is required")
+	}
+	if req.Name == "" {
+		return nil, status.Error(codes.InvalidArgument, "name is required")
+	}
+	if req.Surname == "" {
+		return nil, status.Error(codes.InvalidArgument, "surname is required")
+	}
+	if req.ShortName == "" {
+		return nil, status.Error(codes.InvalidArgument, "short name is required")
+	}
+	userID, err := s.user.Register(ctx, req.Email, req.Password, req.Name, req.Surname, req.ShortName)
 	if err != nil {
+		if errors.Is(err, storage.ErrUserAlreadyExists) {
+			return nil, status.Error(codes.AlreadyExists, "user already exists")
+		}
+		return nil, status.Error(codes.Internal, "failed to register user")
 	}
 	return &authServicev1.RegisterResponse{UserId: userID}, nil
 }

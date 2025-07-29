@@ -2,7 +2,11 @@ package services
 
 import (
 	"context"
+	"errors"
+	"golang.org/x/crypto/bcrypt"
 	"log/slog"
+	"taskboard/auth-service/internal/config"
+	"taskboard/auth-service/internal/lib/jwt"
 	"taskboard/auth-service/internal/models"
 	"taskboard/auth-service/internal/storage"
 )
@@ -10,6 +14,7 @@ import (
 type UserServiceImpl struct {
 	log     *slog.Logger
 	storage storage.User
+	config  config.SecurityConfig
 }
 
 func NewUserService(
@@ -19,6 +24,7 @@ func NewUserService(
 	return &UserServiceImpl{
 		log:     log,
 		storage: storage,
+		config:  config.New().Security,
 	}
 }
 
@@ -34,10 +40,26 @@ func (u *UserServiceImpl) Register(
 	password string,
 	name string,
 	surname string,
+	shortName string,
 ) (string, error) {
-	// при регистрации приложуха сама придумывает уникальное короткое имя из name и surname
-	// через bcrypt можно сделать формирование пароля сразу с солью и не парится с ее хранением
-	return "", nil
+	u.log.Info("Registering user", "email", email, "name", name, "surname", surname)
+	// Проверка на наличие такого пользователя
+	_, err := u.storage.UserByEmail(ctx, email)
+	if err == nil {
+		return "", errors.New("user with this email already exists")
+	}
+
+	// Хеширование пароля
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	// Создание пользователя
+	id, err := u.storage.SaveUser(ctx, email, passwordHash, name, surname, shortName)
+	if err != nil {
+		return "", err
+	}
+	return id.String(), nil
 }
 
 func (u *UserServiceImpl) Login(
@@ -46,5 +68,29 @@ func (u *UserServiceImpl) Login(
 	shortName string,
 	password string,
 ) (string, error) {
-	return "", nil
+	var (
+		user *models.User
+		err  error
+	)
+	if email != "" {
+		user, err = u.storage.UserByEmail(ctx, email)
+		if err != nil {
+			return "", err
+		}
+	} else if shortName != "" {
+		user, err = u.storage.UserByShortName(ctx, shortName)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		return "", errors.New("not enough data to identify user")
+	}
+	if err = bcrypt.CompareHashAndPassword(user.Password, []byte(password)); err != nil {
+		return "", errors.New("password incorrect") // TODO сделать нормальную обработку ошибок
+	}
+	token, err := jwt.GenerateToken(*user, u.config.JWTSecret, u.config.JWTDuration)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }

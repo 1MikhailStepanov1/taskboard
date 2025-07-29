@@ -22,9 +22,15 @@ type DBConfig struct {
 	Database string
 }
 
+type SecurityConfig struct {
+	JWTSecret   string
+	JWTDuration time.Duration
+}
+
 type Config struct {
-	App AppConfig
-	DB  DBConfig
+	App      AppConfig
+	DB       DBConfig
+	Security SecurityConfig
 }
 
 func New() *Config {
@@ -41,6 +47,10 @@ func New() *Config {
 			User:     getEnv("DB_USER", "postgres"),
 			Password: getEnv("DB_PASSWORD", "postgres"),
 			Database: getEnv("DB_DATABASE", "postgres"),
+		},
+		Security: SecurityConfig{
+			JWTSecret:   getEnv("JWT_SECRET", "pipipupu"),
+			JWTDuration: time.Duration(getEnvAsInt("JWT_DURATION", 60)),
 		},
 	}
 }
