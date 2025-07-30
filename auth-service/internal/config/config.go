@@ -9,8 +9,9 @@ import (
 
 type AppConfig struct {
 	SwaggerPath         string
-	HTTPPort            int
-	HTTPShutdownTimeout time.Duration
+	GRPCPort            int
+	GRPCTimeout         time.Duration
+	GRPCShutdownTimeout time.Duration
 	LogLevel            string
 }
 
@@ -37,8 +38,9 @@ func New() *Config {
 	return &Config{
 		App: AppConfig{
 			SwaggerPath:         getEnv("SWAGGER_PATH", "/app/http/swagger.json"),
-			HTTPPort:            getEnvAsInt("HTTP_APP_PORT", 6666),
-			HTTPShutdownTimeout: time.Duration(getEnvAsInt("HTTP_SHUTDOWN_TIMEOUT", 10)),
+			GRPCPort:            getEnvAsInt("APP_PORT", 7777),
+			GRPCTimeout:         time.Duration(getEnvAsInt("APP_TIMEOUT", 10)),
+			GRPCShutdownTimeout: time.Duration(getEnvAsInt("SHUTDOWN_TIMEOUT", 10)),
 			LogLevel:            getEnv("LOG_LEVEL", "PROD"),
 		},
 		DB: DBConfig{

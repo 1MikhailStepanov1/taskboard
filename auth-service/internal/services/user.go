@@ -20,11 +20,12 @@ type UserServiceImpl struct {
 func NewUserService(
 	log *slog.Logger,
 	storage storage.User,
+	config config.SecurityConfig,
 ) *UserServiceImpl {
 	return &UserServiceImpl{
 		log:     log,
 		storage: storage,
-		config:  config.New().Security,
+		config:  config,
 	}
 }
 

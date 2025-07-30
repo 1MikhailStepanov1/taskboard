@@ -1,8 +1,12 @@
-package cmd
+package main
 
 import (
 	"log/slog"
 	"os"
+	"os/signal"
+	"syscall"
+	"taskboard/auth-service/internal/app"
+	"taskboard/auth-service/internal/config"
 )
 
 const (
@@ -27,5 +31,20 @@ func setupLogger(env string) *slog.Logger {
 }
 
 func main() {
+	cfg := config.New()
 
+	logger := setupLogger(cfg.App.LogLevel)
+
+	application := app.New(*cfg, *logger)
+
+	go func() {
+		application.GRPCApp.Run()
+	}()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	<-stop
+
+	application.GRPCApp.Stop()
+	logger.Info("GRPC gracefully stopped")
 }
