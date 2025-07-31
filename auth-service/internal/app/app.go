@@ -18,8 +18,8 @@ func New(config config.Config, logger slog.Logger) *App {
 	if err != nil {
 		panic(err)
 	}
-	userStorage := storage.NewUserStorage(connPool)
-	roleStorage := storage.NewRolesStorage(connPool)
+	userStorage := storage.NewUser(connPool)
+	roleStorage := storage.NewRoles(connPool)
 
 	userService := services.NewUserService(&logger, *userStorage, config.Security)
 	roleService := services.NewRoleService(&logger, roleStorage)

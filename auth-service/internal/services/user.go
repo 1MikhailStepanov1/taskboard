@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"log/slog"
 	"taskboard/auth-service/internal/config"
@@ -32,7 +33,13 @@ func NewUserService(
 type UserStorage interface {
 	UserByEmail(ctx context.Context, email string) (*models.User, error)
 	UserByShortName(ctx context.Context, shortName string) (*models.User, error)
-	SaveUser(ctx context.Context, user *models.User) error
+	SaveUser(ctx context.Context,
+		email string,
+		password []byte,
+		name string,
+		surname string,
+		shortName string,
+	) (*uuid.UUID, error)
 }
 
 func (u *UserServiceImpl) Register(

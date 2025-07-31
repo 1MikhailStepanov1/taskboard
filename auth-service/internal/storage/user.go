@@ -11,10 +11,10 @@ import (
 )
 
 type User struct {
-	*BaseStorage
+	*Base
 }
 
-func NewUserStorage(storage *BaseStorage) *User {
+func NewUser(storage *Base) *User {
 	return &User{storage}
 }
 

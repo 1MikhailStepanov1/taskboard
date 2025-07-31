@@ -7,11 +7,11 @@ import (
 	"taskboard/auth-service/internal/config"
 )
 
-type BaseStorage struct {
+type Base struct {
 	pool *pgxpool.Pool
 }
 
-func NewConnectionPool(config config.DBConfig) (*BaseStorage, error) {
+func NewConnectionPool(config config.DBConfig) (*Base, error) {
 
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
 		config.User, config.Password, config.Host, config.Port, config.Database,
@@ -21,9 +21,9 @@ func NewConnectionPool(config config.DBConfig) (*BaseStorage, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not open postgres connection: %w", err)
 	}
-	return &BaseStorage{pool: pool}, nil
+	return &Base{pool: pool}, nil
 }
 
-func (s *BaseStorage) Stop() {
+func (s *Base) Stop() {
 	s.pool.Close()
 }

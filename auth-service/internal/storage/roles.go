@@ -1,9 +1,9 @@
 package storage
 
 type Roles struct {
-	*BaseStorage
+	*Base
 }
 
-func NewRolesStorage(storage *BaseStorage) *Roles {
+func NewRoles(storage *Base) *Roles {
 	return &Roles{storage}
 }
